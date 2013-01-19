@@ -8,15 +8,15 @@
 
 (def things ["one" "two" "three" "four"])
 
-(enlive/deftemplate layout "simple_enlive_example/layout.html" [title content]
+(enlive/deftemplate layout "layout.html" [title content]
   [#{:title :h1}] (enlive/content title)
   [:div.content] (enlive/substitute content))
 
-(enlive/defsnippet show "simple_enlive_example/show.html" [:div.content]
+(enlive/defsnippet show "show.html" [:div.content]
   [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
 
-(def index (enlive/html-resource "simple_enlive_example/index.html"))
+(def index (enlive/html-resource "index.html"))
 
 (defroutes app-routes
   (GET "/" [] (layout "Front page" index))
