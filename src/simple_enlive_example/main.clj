@@ -8,12 +8,14 @@
 
 (def things ["one" "two" "three" "four"])
 
+(defn extract-body [html]
+  (enlive/at html [#{:html :body}] enlive/unwrap))
+
 (enlive/deftemplate layout "layout.html" [title content]
   [#{:title :h1}] (enlive/content title)
-  [:div.content] (enlive/substitute content))
+  [:div.content] (enlive/substitute (extract-body content)))
 
-(enlive/defsnippet show "show.html" [:div.content]
-  [things]
+(enlive/defsnippet show "show.html" [:html] [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
 
 (def index (enlive/html-resource "index.html"))
