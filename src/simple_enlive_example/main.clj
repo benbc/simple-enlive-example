@@ -21,10 +21,10 @@
 
 (def index (enlive/html-resource "index.html"))
 
-(defroutes app-routes
+(defroutes routes
   (GET "/" [] (layout "Front page" index))
   (GET "/show" [] (layout "Show things" (show things)))
   (not-found "Not Found"))
 
 (defn -main []
-  (run-jetty (handler/site app-routes) {:port 8080}))
+  (run-jetty (handler/site routes) {:port 8080}))
