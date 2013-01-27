@@ -15,8 +15,9 @@
   [#{:title :h1}] (enlive/content title)
   [:div.content] (enlive/substitute (extract-body content)))
 
-(enlive/defsnippet show "show.html" [:html] [things]
-  [:li] (enlive/clone-for [thing things] (enlive/content thing)))
+(defn show [things]
+  (enlive/at (enlive/html-resource "show.html")
+             [:li] (enlive/clone-for [thing things] (enlive/content thing))))
 
 (def index (enlive/html-resource "index.html"))
 
