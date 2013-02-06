@@ -11,9 +11,10 @@
 (defn extract-body [html]
   (enlive/at html [#{:html :body}] enlive/unwrap))
 
-(enlive/deftemplate layout "layout.html" [title content]
-  [#{:title :h1}] (enlive/content title)
-  [:div.content] (enlive/substitute (extract-body content)))
+(defmacro deflayout [name source]
+  `(enlive/deftemplate ~name ~source [title# content#]
+     [#{:title :h1}] (enlive/content title#)
+     [:div.content] (enlive/substitute (extract-body content#))))
 
 (defmacro defpage
   ([name title source]
@@ -25,6 +26,8 @@
         (layout ~title
                 (enlive/at (enlive/html-resource ~source)
                            ~@forms)))))
+
+(deflayout layout "layout.html")
 
 (defpage show "Show things" "show.html" [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
