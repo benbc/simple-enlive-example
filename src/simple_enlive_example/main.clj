@@ -11,28 +11,28 @@
 (defn extract-body [html]
   (enlive/at html [#{:html :body}] enlive/unwrap))
 
-(defmacro deflayout [name source]
-  `(enlive/deftemplate ~name ~source [title# content#]
-     [#{:title :h1}] (enlive/content title#)
-     [:div.content] (enlive/substitute (extract-body content#))))
+(defmacro deflayout [name source args & forms]
+  `(defn ~name ~args
+     (enlive/template ~source [content#]
+                      [:div.content] (enlive/substitute (extract-body content#))
+                      ~@forms)))
 
 (defmacro defpage
-  ([name title source layout]
+  ([name source layout]
      `(def ~name
-        (~layout ~title
-                (enlive/html-resource ~source))))
-  ([name title source layout args & forms]
+        (~layout (enlive/html-resource ~source))))
+  ([name source layout args & forms]
      `(defn ~name ~args
-        (~layout ~title
-                (enlive/at (enlive/html-resource ~source)
-                           ~@forms)))))
+        (~layout (enlive/at (enlive/html-resource ~source)
+                            ~@forms)))))
 
-(deflayout default-layout "layout.html")
+(deflayout default-layout "layout.html" [title]
+  [#{:title :h1}] (enlive/content title))
 
-(defpage show "Show things" "show.html" default-layout [things]
+(defpage show "show.html" (default-layout "Show things") [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
 
-(defpage index "Front page" "index.html" default-layout)
+(defpage index "index.html" (default-layout "Front page"))
 
 (defroutes app
   (GET "/" [] index)
