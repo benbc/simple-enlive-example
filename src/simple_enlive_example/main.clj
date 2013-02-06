@@ -17,22 +17,22 @@
      [:div.content] (enlive/substitute (extract-body content#))))
 
 (defmacro defpage
-  ([name title source]
+  ([name title source layout]
      `(def ~name
-        (layout ~title
+        (~layout ~title
                 (enlive/html-resource ~source))))
-  ([name title source args & forms]
+  ([name title source layout args & forms]
      `(defn ~name ~args
-        (layout ~title
+        (~layout ~title
                 (enlive/at (enlive/html-resource ~source)
                            ~@forms)))))
 
-(deflayout layout "layout.html")
+(deflayout default-layout "layout.html")
 
-(defpage show "Show things" "show.html" [things]
+(defpage show "Show things" "show.html" default-layout [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
 
-(defpage index "Front page" "index.html")
+(defpage index "Front page" "index.html" default-layout)
 
 (defroutes app
   (GET "/" [] index)
