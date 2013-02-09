@@ -26,13 +26,13 @@
         (~layout (enlive/at (enlive/html-resource ~source)
                             ~@forms)))))
 
-(deflayout default-layout "layout.html" [title]
+(deflayout layout "layout.html" [title]
   [#{:title :h1}] (enlive/content title))
 
-(defpage show "show.html" (default-layout "Show things") [things]
+(defpage show "show.html" (layout "Show things") [things]
   [:li] (enlive/clone-for [thing things] (enlive/content thing)))
 
-(defpage index "index.html" (default-layout "Front page"))
+(defpage index "index.html" (layout "Front page"))
 
 (defroutes app
   (GET "/" [] index)
